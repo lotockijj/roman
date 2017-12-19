@@ -120,6 +120,7 @@ public class May implements Cloneable{
 		Class d = bb.getClass();
 		System.out.println(c + " " + (c.equals(d)));
 		
+		
 	}
 	int getX() {
 		return x;
