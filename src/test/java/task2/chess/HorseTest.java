@@ -16,11 +16,18 @@ public class HorseTest {
 		//h.printDesk();
 	}
 	
+//	@Test
+//	public void testStartCourse() {
+//		h.putHorseOnDesk();
+//		//Assert.assertEquals(false, h.desk[0][0].isVisited());
+//		h.startCourse();
+//		h.printDesk();
+//	}
+	
 	@Test
-	public void test() {
+	public void testStartCourse2() {
 		h.putHorseOnDesk();
-		//Assert.assertEquals(false, h.desk[0][0].isVisited());
-		h.startCourse();
+		h.startCourse2();
 		h.printDesk();
 	}
 

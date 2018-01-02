@@ -1,7 +1,9 @@
 package task2.chess;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
@@ -42,6 +44,7 @@ public class Horse {
 		while(true) {
 			Field f = course.peek();
 			List<Field> available = getAvailable(f);
+			f.setAvailable(available);
 			if(!available.isEmpty()) {
 				Field fRandom = getRandomField(available);
 				fRandom.setVisited(true);
@@ -57,15 +60,51 @@ public class Horse {
 			if(stop > 1000_000) break;
 		}
 	}
+	
+	public void startCourse2() {
+		long stop = 0;
+		while(true) {
+			Field f = course.peek();
+			List<Field> available = getAvailable(f);
+			f.setAvailable(available);
+			if(!available.isEmpty()) {
+				Field notVisited = getNotVisitedField(f);
+				if(notVisited != null) notVisited.setVisited(true);
+				course.push(notVisited);
+				calculateAvailbleFildsForAllFields();
+			} else {
+				Field rF = course.peek();
+				//rF.setVisited(false);
+				rF.available.put(f, true);
+				course.pop();
+			}
+			if(course.size() == 64) {
+				break;
+			}
+			stop++;
+			if(stop > 1000_000) break;
+		}
+	}
+
+	private void calculateAvailbleFildsForAllFields() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	public Field getRandomField(List<Field> fields) {
 		return fields.get(r.nextInt(fields.size()));
 	}
-
-	public void setTrueForTesting(List<Field> available) {
-		for (int i = 0; i < available.size(); i++) {
-			available.get(i).setVisited(true);
+	
+	public Field getNotVisitedField(Field field) {
+		Field notVisited = null;
+		for(Field f : field.available.keySet()) {
+			if(field.available.get(f) == true){
+				notVisited = field;
+				field.available.put(f, false);
+				System.out.println("Not visited: " + notVisited);
+			}
 		}
+		return notVisited;
 	}
 
 	private List<Field> getAvailable(Field f) {
@@ -107,12 +146,22 @@ public class Horse {
 		private int x;
 		private int y;
 		private boolean visited;
+		public Map<Field, Boolean> available;
 
 		public Field(String h, String v, int x, int y) {
 			this.h = h;
 			this.v = v;
 			this.x = x;
 			this.y = y;
+			available = new HashMap<Field, Boolean>();
+		}
+
+		public void setAvailable(List<Field> available2) {
+			for (int i = 0; i < available2.size(); i++) {
+				if(!available2.get(i).isVisited()) {
+					available.put(available2.get(i), new Boolean(true));
+				}
+			}
 		}
 
 		@Override
