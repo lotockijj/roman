@@ -1,0 +1,5 @@
+2017-11-10 15:35:31,199  INFO [main] - logging.Log4jExample.main 20 - Hello this is an info message
+2017-11-10 15:35:31,202  INFO [main] - logging.Log4jExample.main 21 - Hello Roman :) :) :) 
+2017-11-10 15:35:31,204 ERROR [main] - logging.Log4jExample.main 25 - java.io.FileNotFoundException
+java.io.FileNotFoundException
+	at logging.Log4jExample.main(Log4jExample.java:23)

@@ -1,0 +1,196 @@
+1.���� ��� �������� � ����������?
+USE sample;
+SELECT project_name
+    FROM project
+    WHERE project_no =
+        (SELECT project_no FROM works_on WHERE Job = 'Clerk');
+�������� �������� ����������� ����� ��� ����� ���������.
+���������� �� �������� ������ ����� ����� �� ���� �����.
+select distinct p.project_name from project p 
+join works_on w on p.project_no=w.project_no where w.job='Clerk';
+2.�������� ����� ��� ��������� ������ ���������  ��� ���������� 
+(��������� ���� ������������ ���� �������),
+�� ������ � �������� � ������ � ���� � ���.
+select ee.emp_no, ee.emp_fname, ee.emp_lname, ee.dept_no, ee.domicile 
+
+from employee_enh ee join department d on ee.dept_no=d.dept_no 
+where ee.domicile=d.location;
+3.�������� ����� ��� ��������� ������ ��� ����������, 
+�� �������� � ���������, �� �� ������� � ѳ���.
+select emp_lname from employee_enh e join department d 
+on e.dept_no = d.dept_no where d.location <> 'Seattle';
+4.�������� ����� ��� ��������� ���������� ������ ����������.
+select max(emp_no) from employee_enh;
+5.�������� ����� ��� ��������� �������, ����, ���� ���������� �� ���� ����������� 
+��������  ��� ����������, � ���� ���� ���������� � ���������� ������� 
+����������� ����� ����� ������.
+select e.emp_lname, e.emp_fname, e.domicile, d.location from employee_enh e 
+join department d 
+on e.dept_no=d.dept_no where d.location > e.domicile;
+6.���� �� ��������� 璺����� ����� ������� � ����� (���������, n �������), 
+������ ���� 璺������ ��� ������� �����������?
+n-1;
+7.�������� ����� ��� ��������� ������ ��� ���������� �� �������� 
+����������� � ѳ���.
+select e.emp_no from employee_enh e join department d on e.dept_no=d.dept_no 
+where d.location='Seattle'; 
+8.��� ��������� ������������ ���������� �������?
+9.�������� ����� ��� ��������� ������ �� ������ ��� ����������, 
+�� ����� ������ �� ����� �t�.
+select emp_no, emp_lname from employee_enh where emp_fname like '%t%t%';
+10.�������� ����� ��� ��������� ���� � ������ ��� ����������, 
+�� ���������� �� ������ ��� ����� ��������� 04.01.2007.
+select emp_fname, emp_lname from employee_enh e 
+join works_on w on e.emp_no=w.emp_no where w.enter_date='2007-01-04';
+11.�������� ����� ��� ��������� ���� � ������ ��� ��������, 
+�� �������� ����������� � ѳ���.
+select e.emp_fname, e.emp_lname 
+from employee_enh e 
+join works_on w on e.emp_no=w.emp_no
+ join department d on e.dept_no=d.dept_no 
+
+where w.job='analyst' and d.location='Seattle';
+12.�������� ����� ��� ��������� ������ �������� ��� ��� ����������, 
+�� ���������� �� ������ ��� ��������� 15 ������ 2007 ����.
+select d.dept_no from department d join employee_enh e on d.dept_no=e.dept_no 
+
+join works_on w on e.emp_no=w.emp_no where w.enter_date='2007-10-15';
+13.�������� ����� ��� ��������� ���� � ������ ��� ����������, 
+�� ���������� �� ������ ��� �������� � ��� �� ���, �� � �� ����� �� ���� ���������.
+select e.emp_fname, e.emp_lname
+from employee e join works_on w on e.emp_no=w.emp_no  
+
+group by w.enter_date
+ HAVING COUNT(*) > 1;
+14.�������� ����� ��� ��������� ������ ����������, �� ��� �������� � ���� d1, 
+��� ���������� �� ������ ��� �������� �� 1 ���� 2007 ����. 
+����������� ��������� �� ���������� ������ ����������.
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no
+ 
+where e.dept_no='d1' or w.enter_date < '2007-01-01' order by e.emp_no;
+15.�������� ����� ��� ��������� ������ ����������, �� �������� � ���� d3 
+� �� ���������� �� ������ ��� �������� ���� 1 ���� 2008 ����.
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no
+
+where e.dept_no='d3' and w.enter_date < '2008-01-01';
+16.�������� ����� ��� ��������� ���� � ������ ��� ����������, 
+�� � ����������� � �������� ��� �������� Mercury.
+select e.emp_fname, e.emp_lname from employee_enh e join works_on w on e.emp_no=w.emp_no
+
+join project p on w.project_no=p.project_no
+
+where w.job='manager' and p.project_name='Mercury';
+17.�������� ����� ��� ��������� ������ �� ������ ��� ����������, ������ ������ 
+������� ���� ������ ����� �� ��� ��, � ���������� ������� ������� �es�.
+select emp_no, emp_lname from employee_enh where emp_lname regexp '.[oa]*es$';
+18.�������� ����� ��� ��������� ������ ���������� � ���� ���� ����� (job) 
+��� ��� ����������, �� �������� ��� �������� Gemini.
+select e.emp_no, w.job from employee_enh e join works_on w on e.emp_no=w.emp_no
+ 
+join project p on w.project_no=p.project_no where p.project_name='Gemini';
+19.�������� ����� ��� ��������� ������ ����������, �� ���������� 
+�� ������ ��� �������� �� � 2007 �.
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no 
+where year(w.enter_date)!='2007';
+20.�������� ����� ��� ��������� ���� � ������ ��� ����������, 
+�� �������� � ���� Research ��� Accounting.
+select e.emp_fname, e.emp_lname from employee_enh e 
+
+join department d on d.dept_no=e.dept_no
+
+where d.dept_name='research' or d.dept_name='accounting';
+21.�������� ����� ��� ��������� ���� ������� (� ���������� ����������� ��������), 
+� ����� �������� ���������� � ����� ��������������� �����.
+select distinct p.project_name from project p 
+join works_on w on p.project_no=w.project_no
+
+join employee_enh e on e.emp_no=w.emp_no 
+
+join department d on d.dept_no=e.dept_no 
+where d.dept_name='accounting';
+22.�� �������� GROUP BY ��������� �������� NULL? 
+�� ������� �� ���������� ����������� ����� �������?
+³� �� ���� � ��� ������� � ��������. �� �� ������� ���������� ����������� ����� �������.
+23.� ���� ������ �� COUNT (*) � COUNT (��������)?
+COUNT(*) ������� NULL, COUNT(COLUMN) �� ���� �������. 
+24.��������� �������� � ������������ �������, � ���� ����������������� ��������, 
+�� ��������� ��������� JOIN. (���� �� �������) Not needed
+:)
+25.�������� ����� ��� ��������� ��� ����� ������� works_on.
+select *from works_on;
+
+26.�������� ����� ��� ��������� ������ ����� ��� �� ��������, �� ������� � ���� � ���, 
+�� � ���� � ���� ���� ��������.
+select *from department d join
+
+(select location from department group by location having count(*)> 1) d1
+ 
+on d.location = d1.location;
+27.�������� ����� ��� ��������� ������ ��� ����������, �� �������� � ������� Marketing. 
+�������� ��� ���������� ������ �������������� �������� JOIN �� ������������ �������.
+Correlated Subquery is a sub-query that uses values from the outer query. 
+select e.emp_no from employee_enh e join department d on e.dept_no=d.dept_no 
+where d.dept_name='marketing';
+
+
+select e.emp_no from employee_enh e where e.dept_no in 
+(select dept_no from department where dept_name='marketing');
+28.�������� ����� ��� ��������� ��������� ����� ��� �� ��������, 
+� ����� ��� ���� ���������� ���� ���������� ��� ��� ���, 
+�� ���������� ��� ��, �� � ��������. 
+select d.dept_no, d.dept_name, d.location from department d 
+join employee_enh e where d.location=e.domicile;
+29.�������� ����� ��� ��������� ���� ������ ��� �������� p2 
+��� ��� ����������, � ���� ���� �� �� ��������� ������ (job).
+select enter_date from works_on where job is null;
+30.�������� ����� ��� ��������� ������ ���������� ��� ��� ������.
+
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no where w.job='clerk';
+31.�������� ����� ��� ��������� ���� �������, � ���� �������� ��� ��� ����� ������.
+select p.project_name from project p join works_on w on p.project_no=w.project_no 
+having count(w.project_no)>=2;
+
+32.������� ������ ��� ����������, �� � ��������, ��� �������� � ������� d3.
+select distinct e.emp_fname, e.emp_lname from employee_enh e 
+join works_on w on e.emp_no=w.emp_no where w.job='clerk' or e.dept_no='d3';
+
+33.�������� ����� ��� ��������� ������ ����������, 
+�� �������� � ���� d1 � ���������� �� ������ ��� �������� �� 1 ���� 2008 ����.
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no 
+where e.dept_no='d1' and w.enter_date<'2008-01-01';
+
+34.�������� ����� ��� ��������� ������ ��� ����������, �� ������ � ���� � ��� 
+� �������� � ���� � �������, �� � �� ����� � ����� ����������.
+select distinct a.emp_no from employee_enh a, employee_enh b 
+
+where a.dept_no=b.dept_no and a.domicile=b.domicile and a.emp_no!=b.emp_no;
+35.� ���� ������ �� ����������� DISTINCT �  GROUP BY?
+Use DISTINCT if you just want to remove duplicates. Use GROUPY BY if you want to apply 
+aggregate operators (MAX, SUM, GROUP_CONCAT, ..., or a HAVING clause).
+???
+36.�������� ����� ��� ��������� ������ ����������, 
+�� �������� ������ �������� ��� ��������� � ������ p1.
+select distinct emp_no from works_on where job='analyst' or job='manager';
+37.��������� �� �������� �� ���� ���� �������������.
+select *from department order by location;
+38.�������� ����� ��� ��������� ��� ������� ���������� ��� ����� ��� �����, 
+� ����� ��� ��� ����, � ����� �� ������ (����� �� ���� ������������).
+select *from employee_enh join department using(dept_no);
+39.�������� ����� ��� ��������� ������ ����������, �� �������� ��� �������� p2 
+� ����� ����� ���������� ����� 10 000. �������� ����� �� ��������� ���� �����, 
+��� ������������ ��������� SELECT.
+select e.emp_no from employee_enh e join works_on w on e.emp_no=w.emp_no 
+where w.project_no='p2' and e.emp_no>10000;
+
+
+select e.emp_no from employee_enh e where 
+e.emp_no in(select emp_no from works_on where project_no='p2') 
+and e.emp_no>10000;
+40.�������� ����� ��� ��������� ����� (job), �� ���� ��������� ����� �� ���� �����������.
+select job from works_on group by job having count(job)>2;
+41.�������� ����� ��� ��������� ���� ������� ������ ��� ��� ������, �� �������� � ������� d1.
+select w.enter_date from works_on w join employee_enh e on w.emp_no=e.emp_no 
+where e.dept_no='d1' and w.job='clerk';
+42/my. Create view.
+create view employee_job (emp_no, job) as select distinct e.emp_no, w.job from employee_enh e join works_on w on e.emp_no=w.emp_no where w.project_no='p3'; 
+

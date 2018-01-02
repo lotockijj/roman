@@ -1,0 +1,138 @@
+1.Напишіть запит для отримання назв та номерів всіх відділень, що знаходяться у Далласі.
+select dept_no, dept_name from department where location='Dallas';
+2.Напишіть запит для отримання повних даних про всі відділи.
+select *from department;
+3.Напишіть запит для отримання номерів працівників, номерів проектів і назв робіт 
+для працівників, які витратили НЕ найбільше часу для роботи над одним з цих проектів
+select employee.emp_no, project.project_no, project_name from 
+employee 
+left join (project, works_on) on 
+
+(employee.emp_no = works_on.emp_no and project.project_no = works_on.project_no) 
+
+WHERE works_on.enter_date <> (SELECT MAX(enter_date) FROM works_on) group by emp_no;
+4.Напишіть запит для отримання імен, прізвищ та номерів всіх працівників, 
+у яких друга буква імені «а».
+select emp_fname, emp_lname, emp_no from employee where  SUBSTR(emp_fname, 2, 1) = 'a';
+select emp_fname, emp_lname, emp_no from employee where emp_fname LIKE '_a%';
+5.Напишіть запит який видає список номерів проектів та робіт, що виконуються на цьому проекті.
+При цьому невідомі роботи виводити не потрібно.
+select project_no, job from works_on where job IS NOT NULL;
+6.Напишіть запит для обчислення кількості різних робіт у кожному проекті.
+select project_no, count(job) from works_on group by project_no;
+7.Напишіть запит для отримання всіх даних про всі підрозділи, 
+чиє місце розташування починається з символу в діапазоні від C до F.
+select *from department where location REGEXP '^[C-F]';
+8.Напишіть запит для отримання повних даних про працівників, 
+чиї номери не рівні ні 10102, ні 9031
+select *from employee where emp_no<>10102 and emp_no != 9031;
+9.Напишіть запит для обчислення суми всіх бюджетів всіх проектів.
+select sum(budget) as SUM from  project;
+10.Напишіть запит для отримання номерів працівників, 
+які працюють над проектом p1 і/або проектом p2.
+select emp_no from works_on where project_no='p1' and project_no='p2' 
+
+or project_no='p1' or project_no='p2';
+11.Напишіть запит для отримання повних даних про працівників, 
+чиї номери рівні 29346, 28559 або 25348
+select *from employee where emp_no=29346 or emp_no=28559 or emp_no=25348;
+12.Напишіть запит для виведення (по одному разу) тих робіт з таблиці works_on, 
+які починаються з букви M.
+select distinct job from works_on where job like 'm%';
+13.Напишіть запит для отримання списку всіх різних робіт по кожному проекту.
+select distinct project_no, job from works_on;
+14.Напишіть запит для обчислення кількості робіт у всіх проектах 
+(наприклад, скільки у всіх проектах є менеджерів, клерків і т.д.).
+select job, count(job) from works_on group by job;
+15.Напишіть запит для отримання номерів і прізвищ всіх працівників, 
+що не працюють у відділі d2.
+select emp_no, emp_lname from employee where dept_no <> 'd2';
+16.Напишіть запит для отримання назв всіх проектів з бюджетом, 
+меншим ніж $100 000 і більшим, ніж $150 000.
+select project_name, budget from project where budget > 100000 and budget < 150000;
+17.Напишіть запит для отримання імен і прізвищ працівників, що працюють у відділі Research.
+select e.emp_fname, e.emp_lname from employee e 
+join department d 
+on d.dept_no=e.dept_no where d.dept_name='research';
+18.Напишіть запит для отримання всіх даних про працівника на посаді менеджера, 
+який останнім отримав цю посаду.
+SELECT * FROM sample.works_on where job in('manager') 
+and enter_date in(select max(enter_date) from sample.works_on where job in('manager'));
+
+select * from employee where emp_no=
+(select emp_no from works_on 
+where enter_date=
+(select min(enter_date) from works_on where job="manager"));
+
+select *
+from employee
+ join works_on
+ on employee.emp_no = works_on.emp_no
+where 
+enter_date = (select max(enter_date)
+ from works_on
+ where job = "manager");
+
+select * from employee where emp_no = 
+(select emp_no from works_on where job='manager' order by enter_date desc limit 1);
+19.Напишіть запит для отримання назв і бюджетів всіх проектів 
+з бюджетом в діапазоні від $95 000 до $120 000 включно.
+select project_name, budget from project where budget>=95000 and budget<=120000;
+20.Напишіть запит для отримання переліку всіх різних робіт для всіх працівників.
+
+select distinct job from works_on;
+21.Напишіть запит для отримання списку працівників, що працюють над проектом p1 
+і відповідних робіт, які вони виконують. Якщо робота для певного з працівників невідома, 
+то у відповідній колонці вивести запис «Job unknown».
+select emp_no, ifnull(job, 'Job unknown') as job from  works_on where project_no='p1';
+22.Напишіть запит для отримання назв всіх проектів з бюджетом, 
+більшим ніж 60 000 фунтів стерлінгів (при поточному курсі за 1 долар 0,51 фунт стерлінгів).
+select project_name from project where budget > 60000/0.51;
+23.Напишіть запит для отримання номерів працівників і відповідних номерів проектів 
+для невідомих робіт, пов’язаних з проектом p2.
+select emp_no, project_no from works_on where job is null and project_no = 'p2';
+24.Напишіть запит для обчислення середнього значення всіх бюджетів, більших за $100 000.
+select avg(budget) from project where budget > 100000;
+25.Напишіть запит для отримання номера та прізвища працівника з найменшим номером.
+select emp_no, emp_lname from employee where emp_no=(select min(emp_no) from employee);
+26.Напишіть запит для отримання прізвищ всіх працівників, що працюють над проектом Apollo
+select e.emp_lname from employee e join works_on w on e.emp_no=w.emp_no
+
+join project p on p.project_no=w.project_no where p.project_name='Apollo';
+27.Напишіть запит для отримання номерів відділів, імен та прізвищ тих працівників, 
+у яких номери менші, ніж 20 000, впорядкувавши результат за зростанням спершу 
+по прізвищах, потім по іменах.
+select d.dept_no, e.emp_fname, e.emp_lname from employee e 
+
+left join department d on e.dept_no = d.dept_no where  e.emp_no<20000 
+
+group by e.emp_fname
+order by e.emp_lname asc, e.emp_fname desc;
+28.Напишіть запит для отримання прізвищ та імен всіх працівників, з номером працівника, 
+більшим або рівним 15 000.
+select emp_lname, emp_fname from employee where emp_no >= 15000;
+29.Напишіть запит для отримання номерів всіх проектів та кількості працівників, 
+які працюють над цими проектами, у порядку спадання кількості працівників.
+select p.project_no, count(w.emp_no) from project p join works_on w 
+on p.project_no=w.project_no 
+group by p.project_no asc;
+30.Напишіть запит для отримання повних даних про всіх працівників, 
+чиє відділення знаходиться у Далласі.
+select e.* from employee_enh e left join department d on e.dept_no=d.dept_no 
+where d.location='Dallas';
+31.Напишіть запит для отримання номерів, імен та прізвищ всіх працівників, 
+чиї прізвища не починаються з букв J, K, L, M, N або О, 
+і чиї імена не починаються з букв E або Z.
+select emp_no, emp_fname, emp_lname from employee_enh 
+
+where emp_lname NOT REGEXP '^[JKLMNO]' and emp_fname NOT REGEXP '^[EZ]';
+32.Напишіть запит для отримання повних відомостей про працівників, 
+чиї імена не закінчуються символом «n».
+select  *from employee_enh where emp_fname not regexp 'n$';
+33.Напишіть запит для отримання номерів проектів, над якими працює 
+менше ніж чотири працівники.
+select project_no  from works_on group by project_no having count(emp_no) < 4;
+34.Напишіть запит для отримання всіх даних про роботи, які почалися у 2007 році.
+select *from works_on where YEAR(enter_date) >= 2007;
+
+
